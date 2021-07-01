@@ -2,11 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\User;
+use App\Api\ApiMessages;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
+    private $user;
+    
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +22,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users = $this->user->paginate('10');
+
+        return response()->json($users, 200);
     }
 
     /**
@@ -25,7 +35,30 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+
+        if((!$request->has('password')) || (!$request->get('password')))
+        {
+            $message = new ApiMessages('Necessário informar uma senha para o usuário!');
+            return response()->json($message->getMessage(), 401);
+        }
+
+        try {
+            $data['password'] = bcrypt($data['password']);
+            $user = $this->user->create($data);
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'Usuário cadastrado com sucesso!'
+                ]
+            ], 200);
+        }
+        catch (\Exception $e)
+        {  
+
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 401);
+        }
     }
 
     /**
@@ -36,7 +69,19 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+
+            $user = $this->user->findOrFail($id);
+
+            return response()->json([
+                'data' => $user
+            ], 200);
+        }
+        catch (\Exception $e)
+        {
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 401);
+        }
     }
 
     /**
@@ -48,7 +93,34 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->all();
+
+        if(($request->has('password')) && ($request->get('password')))
+        {
+            $data['password'] = bcrypt($data['password']);
+        }
+        else
+        {
+            unset($data['password']);
+        }
+
+        try {
+
+            $user = $this->user->findOrFail($id);
+
+            $user->update($data);
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'Usuário atualizado com sucesso!'
+                ]
+            ], 200);
+        }
+        catch (\Exception $e)
+        {
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 401);
+        }
     }
 
     /**
@@ -59,6 +131,22 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+
+            $user = $this->user->findOrFail($id);
+
+            $user->delete();
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'Usuário removido com sucesso!'
+                ]
+            ], 200);
+        }
+        catch (\Exception $e)
+        {
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 401);
+        }
     }
 }

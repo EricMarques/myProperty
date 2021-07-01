@@ -40,7 +40,8 @@ class RealStateController extends Controller
         }
         catch (\Exception $e)
         {
-            return response()->json(['error' => $e->getMessage()], 401);
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 401);
         }
     }
 
