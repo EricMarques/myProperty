@@ -29,7 +29,7 @@ class RealStateRequest extends FormRequest
             'content' => 'required',
             'price' => 'required',
             'bathrooms' => 'required',
-            'badrooms' => 'required',
+            'bedrooms' => 'required',
             'garage' => 'required',
             'property_area' => 'required',
             'total_property_area' => 'required',

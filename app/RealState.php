@@ -13,17 +13,23 @@ class RealState extends Model
         'description',
         'content',
         'price',
+        'slug',
+        'bedrooms',
         'bathrooms',
-        'badrooms',
         'garage',
         'property_area',
         'total_property_area',
-        'slug',
     ];
 
     public function user()
     {
         //Faz mapeamento onde um usuario pode possuir mais de um movel e ESTE imóvel pertence a ele
         return $this->belongsTo(User::class);
+    }
+
+    public function categories()
+    {
+        //Faz mapeamento onde uma categoria pode estar associada a mais de um imóvel
+        return $this->belongsToMany(Category::class, 'real_state_categories');
     }
 }

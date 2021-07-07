@@ -52,7 +52,9 @@ class CategoryController extends Controller
 				]
 			], 200);
 
-		} catch (\Exception $e) {
+		}
+		catch (\Exception $e)
+		{
 			$message = new ApiMessages($e->getMessage());
 			return response()->json($message->getMessage(), 401);
 		}
@@ -74,7 +76,9 @@ class CategoryController extends Controller
 				'data' => $category
 			], 200);
 
-		} catch (\Exception $e) {
+		}
+		catch (\Exception $e)
+		{
 			$message = new ApiMessages($e->getMessage());
 			return response()->json($message->getMessage(), 401);
 		}
@@ -102,7 +106,9 @@ class CategoryController extends Controller
 				]
 			], 200);
 
-		} catch (\Exception $e) {
+		}
+		catch (\Exception $e)
+		{
 			$message = new ApiMessages($e->getMessage());
 			return response()->json($message->getMessage(), 401);
 		}
@@ -127,7 +133,25 @@ class CategoryController extends Controller
 				]
 			], 200);
 
-		} catch (\Exception $e) {
+		}
+		catch (\Exception $e)
+		{
+			$message = new ApiMessages($e->getMessage());
+			return response()->json($message->getMessage(), 401);
+		}
+	}
+
+	public function realStates($id)
+	{
+		try {
+			$category = $this->category->findOrFail($id);
+
+			return response()->json([
+				'data' => $category->realStates
+			], 200);
+		}
+		catch (\Exception $e)
+		{
 			$message = new ApiMessages($e->getMessage());
 			return response()->json($message->getMessage(), 401);
 		}

@@ -12,4 +12,10 @@ class Category extends Model
         'description',
         'slug',
     ];
+
+    public function realStates()
+    {  
+        //Faz mapeamento informando que uma categoria está associada a um imóvel
+        return $this->belongsToMany(RealState::class, 'real_state_categories');
+    }
 }

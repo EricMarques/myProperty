@@ -6,6 +6,7 @@ use App\User;
 use App\Api\ApiMessages;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -43,9 +44,18 @@ class UserController extends Controller
             return response()->json($message->getMessage(), 401);
         }
 
-        try {
+        Validator::make($data, [
+            'mobile_phone' => 'required',
+        ])->validate();
+
+        try
+        {
             $data['password'] = bcrypt($data['password']);
             $user = $this->user->create($data);
+            $user->profile()->create([
+                'phone' => $data['phone'],
+                'mobile_phone' => $data['mobile_phone'],
+            ]);
 
             return response()->json([
                 'data' => [
@@ -69,9 +79,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        try {
+        try
+        {
 
-            $user = $this->user->findOrFail($id);
+            $user = $this->user->with('profile')->findOrFail($id);
+            $user->profile->social_networks = unserialize($user->profile->social_networks);
 
             return response()->json([
                 'data' => $user
@@ -104,11 +116,20 @@ class UserController extends Controller
             unset($data['password']);
         }
 
-        try {
+        Validator::make($data, [
+            'profile.mobile_phone' => 'required',
+        ])->validate();
+
+        try
+        {
+            $profile = $data['profile'];
+            $profile['social_networks'] = serialize($profile['social_networks']);
 
             $user = $this->user->findOrFail($id);
 
             $user->update($data);
+
+            $user->profile()->update($profile);
 
             return response()->json([
                 'data' => [
@@ -131,7 +152,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        try {
+        try
+        {
 
             $user = $this->user->findOrFail($id);
 

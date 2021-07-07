@@ -23,7 +23,7 @@ class CreateTableRealState extends Migration
             $table->text('content');
             $table->float('price', 10, 2);
             $table->integer('bathrooms');
-            $table->integer('badrooms');
+            $table->integer('bedrooms');
             $table->integer('garage');
             $table->integer('property_area');
             $table->integer('total_property_area');

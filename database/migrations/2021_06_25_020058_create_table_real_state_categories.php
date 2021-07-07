@@ -16,10 +16,10 @@ class CreateTableRealStateCategories extends Migration
         Schema::create('real_state_categories', function (Blueprint $table) {
             //Relacionamento
             $table->unsignedInteger('real_state_id');
-            $table->unsignedInteger('categories_id');
+            $table->unsignedInteger('category_id');
             //Referência do relacionamento
             $table->foreign('real_state_id')->references('id')->on('real_state');
-            $table->foreign('categories_id')->references('id')->on('categories');
+            $table->foreign('category_id')->references('id')->on('categories');
         });
     }
 
