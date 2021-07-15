@@ -32,4 +32,9 @@ class RealState extends Model
         //Faz mapeamento onde uma categoria pode estar associada a mais de um imóvel
         return $this->belongsToMany(Category::class, 'real_state_categories');
     }
+
+    public function photos()
+    {
+        return $this->hasMany(RealStatePhoto::class);
+    }
 }
